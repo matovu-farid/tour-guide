@@ -13,8 +13,7 @@ export interface Point {
 export function computeConvexHull(points: Point[]): Point[] {
   // Remove duplicates while preserving IDs
   const uniquePoints = Array.from(
-    new Map(points.map(p => [`${p.x},${p.y}`, p]))
-    .values()
+    new Map(points.map((p) => [`${p.x},${p.y}`, p])).values()
   );
 
   if (uniquePoints.length <= 1) return uniquePoints;
@@ -111,10 +110,10 @@ export function findFurthestPoints(hull: Point[]): [Point, Point] {
 }
 
 function subtractPoints(p1: Point, p2: Point): Point {
-  return { 
-    x: p1.x - p2.x, 
+  return {
+    x: p1.x - p2.x,
     y: p1.y - p2.y,
-    id: p1.id
+    id: p1.id,
   };
 }
 

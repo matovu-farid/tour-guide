@@ -24,7 +24,6 @@ export default function Page() {
     <View style={styles.container}>
       <MapView
         style={styles.map}
-        // 0.3152° N, 32.5816° E
         initialRegion={{
           latitude: 0.3152,
           longitude: 32.5816,
@@ -43,7 +42,15 @@ export default function Page() {
             description={marker.description}
           />
         ))}
-
+        <Polygon
+          coordinates={hull.map((point) => ({
+            latitude: point.x,
+            longitude: point.y,
+          }))}
+          fillColor="#ff0000"
+          strokeWidth={10}
+          strokeColor="rgba(0,255,0,0.5)"
+        />
         <Polyline
           coordinates={sortedmarkers.map((marker) => ({
             latitude: marker.latitude,
@@ -51,13 +58,6 @@ export default function Page() {
           }))}
           strokeColor="#ff0000"
           strokeWidth={8}
-        />
-        <Polygon
-          coordinates={hull.map((point) => ({
-            latitude: point.x,
-            longitude: point.y,
-          }))}
-          fillColor="rgba(0,255,0,0.1)"
         />
       </MapView>
     </View>
