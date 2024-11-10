@@ -1,6 +1,7 @@
-interface Point {
+export interface Point {
   x: number;
   y: number;
+  id: number;
 }
 
 /**
@@ -10,13 +11,11 @@ interface Point {
  * @returns An array of Point objects representing the convex hull in counterclockwise order.
  */
 export function computeConvexHull(points: Point[]): Point[] {
-  // Remove duplicates
+  // Remove duplicates while preserving IDs
   const uniquePoints = Array.from(
-    new Set(points.map((p) => `${p.x},${p.y}`))
-  ).map((key) => {
-    const [x, y] = key.split(",").map(Number);
-    return { x, y };
-  });
+    new Map(points.map(p => [`${p.x},${p.y}`, p]))
+    .values()
+  );
 
   if (uniquePoints.length <= 1) return uniquePoints;
 
@@ -112,7 +111,11 @@ export function findFurthestPoints(hull: Point[]): [Point, Point] {
 }
 
 function subtractPoints(p1: Point, p2: Point): Point {
-  return { x: p1.x - p2.x, y: p1.y - p2.y };
+  return { 
+    x: p1.x - p2.x, 
+    y: p1.y - p2.y,
+    id: p1.id
+  };
 }
 
 function crossProduct(p1: Point, p2: Point): number {

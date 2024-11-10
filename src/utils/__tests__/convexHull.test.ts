@@ -1,10 +1,5 @@
 import { expect, test, describe } from "bun:test";
-import { computeConvexHull, findFurthestPoints } from "../convexHull";
-
-interface Point {
-  x: number;
-  y: number;
-}
+import { computeConvexHull, findFurthestPoints, Point } from "../convexHull";
 
 // Helper function to check if two points are equal
 function arePointsEqual(p1: Point, p2: Point): boolean {
@@ -27,15 +22,15 @@ function arePointArraysEqual(arr1: Point[], arr2: Point[]): boolean {
 describe("computeConvexHull", () => {
   test("Simple triangle", () => {
     const points: Point[] = [
-      { x: 0, y: 0 },
-      { x: 1, y: 1 },
-      { x: 2, y: 0 },
+      { x: 0, y: 0, id: 1 },
+      { x: 1, y: 1, id: 2 },
+      { x: 2, y: 0, id: 3 },
     ];
 
     const expectedHull: Point[] = [
-      { x: 0, y: 0 },
-      { x: 2, y: 0 },
-      { x: 1, y: 1 },
+      { x: 0, y: 0, id: 1 },
+      { x: 2, y: 0, id: 3 },
+      { x: 1, y: 1, id: 2 },
     ];
 
     const hull = computeConvexHull(points);
@@ -44,17 +39,17 @@ describe("computeConvexHull", () => {
 
   test("Square shape", () => {
     const points: Point[] = [
-      { x: 0, y: 0 },
-      { x: 0, y: 2 },
-      { x: 2, y: 2 },
-      { x: 2, y: 0 },
+      { x: 0, y: 0, id: 1 },
+      { x: 0, y: 2, id: 2 },
+      { x: 2, y: 2, id: 3 },
+      { x: 2, y: 0, id: 4 },
     ];
 
     const expectedHull: Point[] = [
-      { x: 0, y: 0 },
-      { x: 0, y: 2 },
-      { x: 2, y: 2 },
-      { x: 2, y: 0 },
+      { x: 0, y: 0, id: 1 },
+      { x: 0, y: 2, id: 2 },
+      { x: 2, y: 2, id: 3 },
+      { x: 2, y: 0, id: 4 },
     ];
 
     const hull = computeConvexHull(points);
@@ -63,15 +58,15 @@ describe("computeConvexHull", () => {
 
   test("Colinear points", () => {
     const points: Point[] = [
-      { x: 0, y: 0 },
-      { x: 1, y: 1 },
-      { x: 2, y: 2 },
-      { x: 3, y: 3 },
+      { x: 0, y: 0, id: 1 },
+      { x: 1, y: 1, id: 2 },
+      { x: 2, y: 2, id: 3 },
+      { x: 3, y: 3, id: 4 },
     ];
 
     const expectedHull: Point[] = [
-      { x: 0, y: 0 },
-      { x: 3, y: 3 },
+      { x: 0, y: 0, id: 1 },
+      { x: 3, y: 3, id: 4 },
     ];
 
     const hull = computeConvexHull(points);
@@ -80,18 +75,18 @@ describe("computeConvexHull", () => {
 
   test("Concave shape", () => {
     const points: Point[] = [
-      { x: 0, y: 0 },
-      { x: 2, y: 1 },
-      { x: 1, y: 2 },
-      { x: 2, y: 3 },
-      { x: 0, y: 3 },
+      { x: 0, y: 0, id: 1 },
+      { x: 2, y: 1, id: 2 },
+      { x: 1, y: 2, id: 3 },
+      { x: 2, y: 3, id: 4 },
+      { x: 0, y: 3, id: 5 },
     ];
 
     const expectedHull: Point[] = [
-      { x: 0, y: 0 },
-      { x: 2, y: 1 },
-      { x: 2, y: 3 },
-      { x: 0, y: 3 },
+      { x: 0, y: 0, id: 1 },
+      { x: 2, y: 1, id: 2 },
+      { x: 2, y: 3, id: 4 },
+      { x: 0, y: 3, id: 5 },
     ];
 
     const hull = computeConvexHull(points);
@@ -100,21 +95,21 @@ describe("computeConvexHull", () => {
 
   test("Star shape", () => {
     const points: Point[] = [
-      { x: 0, y: 3 },
-      { x: 1, y: 1 },
-      { x: 3, y: 0 },
-      { x: 1, y: -1 },
-      { x: 0, y: -3 },
-      { x: -1, y: -1 },
-      { x: -3, y: 0 },
-      { x: -1, y: 1 },
+      { x: 0, y: 3, id: 1 },
+      { x: 1, y: 1, id: 2 },
+      { x: 3, y: 0, id: 3 },
+      { x: 1, y: -1, id: 4 },
+      { x: 0, y: -3, id: 5 },
+      { x: -1, y: -1, id: 6 },
+      { x: -3, y: 0, id: 7 },
+      { x: -1, y: 1, id: 8 },
     ];
 
     const expectedHull: Point[] = [
-      { x: -3, y: 0 },
-      { x: 0, y: -3 },
-      { x: 3, y: 0 },
-      { x: 0, y: 3 },
+      { x: -3, y: 0, id: 7 },
+      { x: 0, y: -3, id: 5 },
+      { x: 3, y: 0, id: 3 },
+      { x: 0, y: 3, id: 1 },
     ];
 
     const hull = computeConvexHull(points);
@@ -130,6 +125,7 @@ describe("computeConvexHull", () => {
       points.push({
         x: radius * Math.cos(angle),
         y: radius * Math.sin(angle),
+        id: i,
       });
     }
 
@@ -145,10 +141,10 @@ describe("computeConvexHull", () => {
 });
 describe("findFurthestPoints", () => {
   test("Simple triangle", () => {
-    const hull: Point[] = computeConvexHull(  [
-      { x: 0, y: 0 },
-      { x: 2, y: 0 },
-      { x: 1, y: 1 },
+    const hull: Point[] = computeConvexHull([
+      { x: 0, y: 0, id: 1 },
+      { x: 2, y: 0, id: 2 },
+      { x: 1, y: 1, id: 3 },
     ]);
 
     const [pointA, pointB] = findFurthestPoints(hull);
@@ -161,11 +157,11 @@ describe("findFurthestPoints", () => {
   });
 
   test("Square shape", () => {
-    const hull: Point[] = computeConvexHull(  [
-      { x: 0, y: 0 },
-      { x: 0, y: 2 },
-      { x: 2, y: 2 },
-      { x: 2, y: 0 },
+    const hull: Point[] = computeConvexHull([
+      { x: 0, y: 0, id: 1 },
+      { x: 0, y: 2, id: 2 },
+      { x: 2, y: 2, id: 3 },
+      { x: 2, y: 0, id: 4 },
     ]);
 
     const [pointA, pointB] = findFurthestPoints(hull);
@@ -173,12 +169,12 @@ describe("findFurthestPoints", () => {
     // The furthest points should be opposite corners
     const expectedPairs = [
       [
-        { x: 0, y: 0 },
-        { x: 2, y: 2 },
+        { x: 0, y: 0, id: 1 },
+        { x: 2, y: 2, id: 3 },
       ],
       [
-        { x: 0, y: 2 },
-        { x: 2, y: 0 },
+        { x: 0, y: 2, id: 2 },
+        { x: 2, y: 0, id: 4 },
       ],
     ];
 
@@ -199,10 +195,10 @@ describe("findFurthestPoints", () => {
 
   test("Colinear points", () => {
     const hull: Point[] = computeConvexHull([
-      { x: 0, y: 0 },
-      { x: 1, y: 1 },
-      { x: 2, y: 2 },
-      { x: 3, y: 3 },
+      { x: 0, y: 0, id: 1 },
+      { x: 1, y: 1, id: 2 },
+      { x: 2, y: 2, id: 3 },
+      { x: 3, y: 3, id: 4 },
     ]);
 
     const [pointA, pointB] = findFurthestPoints(hull);
@@ -216,10 +212,10 @@ describe("findFurthestPoints", () => {
 
   test("Convex quadrilateral", () => {
     const hull: Point[] = computeConvexHull([
-      { x: 0, y: 0 },
-      { x: 2, y: 1 },
-      { x: 2, y: 3 },
-      { x: 0, y: 3 },
+      { x: 0, y: 0, id: 1 },
+      { x: 2, y: 1, id: 2 },
+      { x: 2, y: 3, id: 4 },
+      { x: 0, y: 3, id: 5 },
     ]);
 
     const [pointA, pointB] = findFurthestPoints(hull);
@@ -227,8 +223,8 @@ describe("findFurthestPoints", () => {
     // The furthest points should be (0,0) and (2,3)
     const expectedPairs = [
       [
-        { x: 0, y: 0 },
-        { x: 2, y: 3 },
+        { x: 0, y: 0, id: 1 },
+        { x: 2, y: 3, id: 4 },
       ],
     ];
 
@@ -256,6 +252,7 @@ describe("findFurthestPoints", () => {
       points.push({
         x: radius * Math.cos(angle),
         y: radius * Math.sin(angle),
+        id: i,
       });
     }
 
@@ -275,13 +272,13 @@ describe("findFurthestPoints", () => {
 
   test("Random convex polygon", () => {
     // A convex hexagon
-    const hull: Point[] = computeConvexHull(  [
-      { x: 0, y: 0 },
-      { x: 2, y: -1 },
-      { x: 4, y: 0 },
-      { x: 5, y: 2 },
-      { x: 3, y: 4 },
-      { x: 1, y: 3 },
+    const hull: Point[] = computeConvexHull([
+      { x: 0, y: 0, id: 1 },
+      { x: 2, y: -1, id: 2 },
+      { x: 4, y: 0, id: 3 },
+      { x: 5, y: 2, id: 4 },
+      { x: 3, y: 4, id: 5 },
+      { x: 1, y: 3, id: 6 },
     ]);
 
     const [pointA, pointB] = findFurthestPoints(hull);
@@ -295,19 +292,19 @@ describe("findFurthestPoints", () => {
 
   // Additional edge case tests
   test("Single point", () => {
-    const hull: Point[] = computeConvexHull([{ x: 0, y: 0 }]) ;
+    const hull: Point[] = computeConvexHull([{ x: 0, y: 0, id: 0 }]);
 
     const [pointA, pointB] = findFurthestPoints(hull);
 
     // Both points should be the same since there's only one point
-    expect(pointA).toEqual({ x: 0, y: 0 });
-    expect(pointB).toEqual({ x: 0, y: 0 });
+    expect(pointA).toEqual({ x: 0, y: 0, id: 0 });
+    expect(pointB).toEqual({ x: 0, y: 0, id: 0 });
   });
 
   test("Two points", () => {
-    const hull: Point[] = computeConvexHull(  [
-      { x: -1, y: -1 },
-      { x: 1, y: 1 },
+    const hull: Point[] = computeConvexHull([
+      { x: -1, y: -1, id: 1 },
+      { x: 1, y: 1, id: 2 },
     ]);
 
     const [pointA, pointB] = findFurthestPoints(hull);
@@ -323,11 +320,11 @@ describe("findFurthestPoints", () => {
   });
 
   test("Multiple maxima", () => {
-    const hull: Point[] = computeConvexHull(  [
-      { x: -1, y: 0 },
-      { x: 0, y: 1 },
-      { x: 1, y: 0 },
-      { x: 0, y: -1 },
+    const hull: Point[] = computeConvexHull([
+      { x: -1, y: 0, id: 1 },
+      { x: 0, y: 1, id: 2 },
+      { x: 1, y: 0, id: 3 },
+      { x: 0, y: -1, id: 4 },
     ]);
 
     const [pointA, pointB] = findFurthestPoints(hull);
@@ -335,12 +332,12 @@ describe("findFurthestPoints", () => {
     // Multiple pairs have the same maximum distance
     const expectedPairs = [
       [
-        { x: -1, y: 0 },
-        { x: 1, y: 0 },
+        { x: -1, y: 0, id: 1 },
+        { x: 1, y: 0, id: 3 },
       ],
       [
-        { x: 0, y: -1 },
-        { x: 0, y: 1 },
+        { x: 0, y: -1, id: 4 },
+        { x: 0, y: 1, id: 2 },
       ],
     ];
 

@@ -4,19 +4,20 @@ import { Text, View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MapView, { Polygon, Polyline } from "react-native-maps";
 import { Marker } from "react-native-maps";
-import { markers } from "@/utils/markers";
+import { markers, sortMarkerAsHamiltonianPath } from "@/utils/markers";
 import { computeConvexHull, findFurthestPoints } from "@/utils/convexHull";
 
 export default function Page() {
-  const { hull, firstPoint, secondPoint } = useMemo(() => {
+  const { hull, sortedmarkers } = useMemo(() => {
     const hull = computeConvexHull(
       markers.map((marker) => ({
         x: marker.longitude,
         y: marker.latitude,
+        id: marker.id,
       }))
     );
-    const [firstPoint, secondPoint] = findFurthestPoints(hull);
-    return { hull, firstPoint, secondPoint };
+    const sortedmarkers = sortMarkerAsHamiltonianPath(markers);
+    return { hull, sortedmarkers };
   }, []);
 
   return (
@@ -44,7 +45,7 @@ export default function Page() {
         ))}
 
         <Polyline
-          coordinates={markers.map((marker) => ({
+          coordinates={sortedmarkers.map((marker) => ({
             latitude: marker.latitude,
             longitude: marker.longitude,
           }))}
@@ -53,8 +54,8 @@ export default function Page() {
         />
         <Polygon
           coordinates={hull.map((point) => ({
-            latitude: point.y,
-            longitude: point.x,
+            latitude: point.x,
+            longitude: point.y,
           }))}
           fillColor="rgba(0,255,0,0.1)"
         />

@@ -9,19 +9,28 @@ export type MarkerType = {
   title: string;
   description: string;
 };
-// export function sortMarkerAsHamiltonianPath(
-//   markers: MarkerType[]
-// ): MarkerType[] {
-//   const distanceMatrix = getDistanceMatrix(markers);
-//   const hull = computeConvexHull(
-//     markers.map((marker) => ({
-//       x: marker.longitude,
-//       y: marker.latitude,
-//     }))
-//   );
-//   const [start, end] = findFurthestPoints(hull);
-//   const path = findHamiltonianPath(markers.length, distanceMatrix, start, end);
-// }
+
+export function sortMarkerAsHamiltonianPath(
+  markers: MarkerType[]
+): MarkerType[] {
+  const distanceMatrix = getDistanceMatrix(markers);
+  const hull = computeConvexHull(
+    markers.map((marker, index) => ({
+      id: index,
+      x: marker.longitude,
+      y: marker.latitude,
+    }))
+  );
+  const [start, end] = findFurthestPoints(hull);
+  const [_,path] = findHamiltonianPath(
+    markers.length,
+    distanceMatrix,
+    start.id,
+    end.id
+  );
+  return path.map((i) => markers[i]);
+}
+
 export const markers: MarkerType[] = [
   {
     id: 1,
